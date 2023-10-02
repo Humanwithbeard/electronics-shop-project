@@ -1,7 +1,5 @@
-
 from src.item import Item
 from src.phone import Phone
-
 
 phone = Item('Телефон', 100, 5)
 Item.pay_rate = 5
@@ -30,8 +28,7 @@ def test_name_setter():
 
 
 def test_instantiate_from_csv():
-    Item.instantiate_from_csv('/Users/mac/Dev/electronics-shop-project'
-                              '/src/items.csv')
+    Item.instantiate_from_csv('/Users/mac/Dev/electronics-shop-project /src/items.csv')
     assert len(Item.all) == 0
 
 
@@ -49,3 +46,5 @@ def test_add():
     dvd = Item("dvd", 9.99, 2)
     iphone = Phone("iphone", 199.99, 2, 1)
     assert dvd + iphone == 4
+
+#1
