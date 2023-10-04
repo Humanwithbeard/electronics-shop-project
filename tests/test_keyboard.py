@@ -1,22 +1,21 @@
+import pytest
+
 from src.keyboard import Keyboard
 
-kb_name = "logitech123"
-kb_price = 9.99
-kb_quantity = 1
+
+@pytest.fixture
+def instance_keyboard():
+    return Keyboard('Dark Project KD87A', 9600, 5)
 
 
-def test_change_lang():
-    keyboard = Keyboard(kb_name, kb_price, kb_quantity)
-    assert keyboard.layout == "EN"
+def test_language(instance_keyboard):
+    assert str(instance_keyboard.language) == 'EN'
+    instance_keyboard.language = 'RU'
+    assert str(instance_keyboard.language) == 'RU'
+    with pytest.raises(AttributeError):
+        instance_keyboard.language = 'CH'
 
-    keyboard.change_lang()
-    assert keyboard.layout == "RU"
 
-
-
-def test__init__():
-    keyboard = Keyboard(kb_name, kb_price, kb_quantity)
-    assert keyboard.name == "logitech123"
-    assert keyboard.price == 9.99
-    assert keyboard.quantity == 1
-
+def test_change_lang(instance_keyboard):
+    instance_keyboard.change_lang()
+    assert str(instance_keyboard.language) == 'RU'
