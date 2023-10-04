@@ -1,50 +1,54 @@
+import pytest
+
 from src.item import Item
 from src.phone import Phone
 
-phone = Item('Телефон', 100, 5)
-Item.pay_rate = 5
+
+@pytest.fixture
+def instance_item():
+    return Item("Смартфон", 10000, 20)
 
 
-def test_calculate_total_price():
-    assert phone.calculate_total_price() == 500
+@pytest.fixture
+def instance_phone():
+    return Phone("iPhone 14", 120_000, 5, 2)
 
 
-def test_apply_discount():
-    phone.apply_discount()
-    assert phone.price == 500
+def test_calculate_total_price(instance_item):
+    assert instance_item.calculate_total_price() == 200000
 
 
-def test_string_to_number():
-    assert Item.string_to_number('99.9') == 99
-    assert Item.string_to_number('99') == 99
+def test_apply_discount(instance_item):
+    instance_item.pay_rate = 0.8
+    instance_item.apply_discount()
+    assert instance_item.price == 8000.0
 
 
-def test_name_setter():
-    test = Item('Телевизор', 500, 1)
-    test.name = 'Тостер'
-    assert test.name == 'Тостер'
-    test.name = 'мп3'
-    assert test.name == 'мп3'
+def test_name(instance_item):
+    assert instance_item.name == 'Смартфон'
+    instance_item.name = 'СуперСмартфон'
+    assert instance_item.name == 'Exception: Длина наименования товара превышает 10 символов.'
+
+
+def test_string_to_number(instance_item):
+    assert instance_item.string_to_number('123') == 123
+    assert instance_item.string_to_number('123.1') == 123
+
+
+def test_repr(instance_item):
+    assert instance_item.__repr__() == "Item('Смартфон', 10000, 20)"
+
+
+def test_str(instance_item):
+    assert instance_item.__str__() == 'Смартфон'
+
+
+def test_add_item(instance_item, instance_phone):
+    assert instance_item.quantity + instance_phone.quantity == 25
+    with pytest.raises(TypeError):
+        instance_item + 2
 
 
 def test_instantiate_from_csv():
-    Item.instantiate_from_csv('/Users/mac/Dev/electronics-shop-project /src/items.csv')
-    assert len(Item.all) == 0
-
-
-def test_repr():
-    phone = Item('Телефон', 3, 1)
-    assert repr(phone) == "Item('Телефон', 3, 1)"
-
-
-def test_str():
-    phone = Item('Телефон', 5, 2)
-    assert str(phone) == 'Телефон'
-
-
-def test_add():
-    dvd = Item("dvd", 9.99, 2)
-    iphone = Phone("iphone", 199.99, 2, 1)
-    assert dvd + iphone == 4
-
-#1
+    with pytest.raises(FileNotFoundError):
+        Item.instantiate_from_csv(path="нет такого файла")

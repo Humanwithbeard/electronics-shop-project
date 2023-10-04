@@ -1,21 +1,22 @@
+import pytest
+
 from src.phone import Phone
 
-phone = Phone('iphone', 10000, 5, 2)
+
+@pytest.fixture
+def instance_phone():
+    return Phone("iPhone 14", 120_000, 5, 2)
 
 
-def test_name():
-    phone.name = 'iphone'
-    assert phone.name == 'iphone'
+def test_repr(instance_phone):
+    assert instance_phone.__repr__() == "Phone('iPhone 14', 120000, 5, 2)"
 
 
-def test_repr():
-    assert repr(phone) == "Phone('iphone', 10000, 5, 2)"
+def test_number_of_sim(instance_phone):
+    assert instance_phone.number_of_sim == 2
+    with pytest.raises(ValueError):
+        instance_phone.number_of_sim = 0
 
 
-def test_phone_sim_cards():
-    assert phone.number_of_sim == 2
-
-
-def test_phone_sim_cards_setter():
-    phone.number_of_sim = 3
-    assert phone.number_of_sim == 3
+def test_str(instance_phone):
+    assert instance_phone.__str__() == 'iPhone 14'
